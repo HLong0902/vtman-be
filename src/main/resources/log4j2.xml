@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Properties>
+        <Property name="patternLayout">[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n</Property>
+        <Property name="maxSize">10 MB</Property>
+        <Property name="maxFile">10</Property>
+        <Property name="logPath">logs</Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+<!--            <PatternLayout pattern="${patternLayout}"/>-->
+            <JsonLayout complete="false" compact="false">
+                <KeyValuePair key="myCustomField" value="myCustomValue" />
+            </JsonLayout>
+        </Console>
+        <RollingFile name="FileInfo" fileName="${logPath}/info.log"
+                     filePattern="${logPath}/%d{yyyy-MM-dd}/info.%i.log">
+<!--            <PatternLayout pattern="${patternLayout}"/>-->
+            <JsonLayout complete="false" compact="false">
+                <KeyValuePair key="myCustomField" value="myCustomValue" />
+            </JsonLayout>
+            <LevelRangeFilter minLevel="INFO" maxLevel="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="${maxSize}"/>
+            </Policies>
+            <DefaultRolloverStrategy max="${maxFile}"/>
+        </RollingFile>
+        <RollingFile name="FileWarn" fileName="${logPath}/warn.log"
+                     filePattern="${logPath}/%d{yyyy-MM-dd}/warn.%i.log">
+            <PatternLayout pattern="${patternLayout}"/>
+            <LevelRangeFilter minLevel="WARN" maxLevel="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="${maxSize}"/>
+            </Policies>
+            <DefaultRolloverStrategy max="${maxFile}"/>
+        </RollingFile>
+        <RollingFile name="FileError" fileName="${logPath}/error.log"
+                     filePattern="${logPath}/%d{yyyy-MM-dd}/error.%i.log">
+            <PatternLayout pattern="${patternLayout}"/>
+            <LevelRangeFilter minLevel="ERROR" maxLevel="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="${maxSize}"/>
+            </Policies>
+            <DefaultRolloverStrategy max="${maxFile}"/>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="com.viettel.vtman.cms" level="info" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="FileInfo"/>
+            <AppenderRef ref="FileError"/>
+            <AppenderRef ref="FileWarn"/>
+        </Logger>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="FileInfo"/>
+            <AppenderRef ref="FileError"/>
+            <AppenderRef ref="FileWarn"/>
+        </Root>
+    </Loggers>
+</Configuration>
